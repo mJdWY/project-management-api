@@ -4,7 +4,7 @@ from rest_framework.test import APIClient
 from rest_framework import status
 from datetime import date
 from .models import Project, Task
-
+from .models import Comment, TaskLog, Notification, TaskFollower
 
 class ProjectTaskPermissionsTestCase(TestCase):
     def setUp(self):
@@ -23,18 +23,18 @@ class ProjectTaskPermissionsTestCase(TestCase):
         self.task = Task.objects.create(
             title='Test Task',
             description='Task Desc',
-            project=self.project,
+            project=self.project,                                     #للحصول على ال token
             assignee=self.member,
             status='todo',
             due_date=date.today()
         )
-
+#دالة تسجيل الدخول
     def authenticate(self, user):
         response = self.client.post('/api/token/', {
             'username': user.username,
             'password': 'pass'
         })
-        self.assertEqual(response.status_code, 200, msg=f"Token request failed for {user.username}")
+        self.assertEqual(response.status_code, 200, msg=f"Token request failed for {user.username}") #نجاح الحصول على ال token
         token = response.data['access']
         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {token}')
 
